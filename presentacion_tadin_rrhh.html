@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TA-DIN · Módulo de RRHH</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#E8EDF1; --panel:#FFFFFF; --ink:#13222D; --muted:#5A6B77;
+  --teal:#0D7C86; --teal-d:#095A62; --amber:#E39B2D; --line:#C9D3DA;
+  --code-bg:#13222D; --code-ink:#D8E6EE; --kw:#7FD6DE; --str:#F3C477; --fn:#9FE0A8;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#0E1A22; --panel:#17262F; --ink:#E6EEF3; --muted:#92A4B0; --line:#2A3E4A; --code-bg:#0A131A;}
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+.deck{height:100%;position:relative}
+.slide{position:absolute;inset:0;padding:48px 64px 88px;overflow-y:auto;display:none;flex-direction:column;justify-content:center;gap:22px}
+.slide.active{display:flex}
+h1{font-size:clamp(2.4rem,6vw,4.6rem);line-height:1.05;font-weight:700;letter-spacing:-.02em;max-width:16ch}
+h2{font-size:clamp(1.6rem,3.2vw,2.5rem);font-weight:700;letter-spacing:-.01em;line-height:1.15}
+h3{font-size:1.05rem;font-weight:600;margin-bottom:6px}
+p,li{font-size:1.02rem;max-width:68ch}
+.muted{color:var(--muted)}
+.lead{font-size:1.25rem;color:var(--muted);max-width:52ch}
+.grid{display:grid;gap:20px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px 22px}
+.card.accent{border-left:5px solid var(--teal)}
+.tag{display:inline-block;font-size:.8rem;font-weight:600;padding:2px 10px;border-radius:99px;background:var(--teal);color:#fff;margin-bottom:8px}
+.tag.amber{background:var(--amber);color:#2A1B00}
+.tag.grey{background:var(--line);color:var(--ink)}
+pre{background:var(--code-bg);color:var(--code-ink);border-radius:8px;padding:14px 16px;font:400 .8rem/1.5 "IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;overflow-x:auto;margin:10px 0}
+.k{color:var(--kw)}.s{color:var(--str)}.f{color:var(--fn)}
+code.i{font-family:"IBM Plex Mono",monospace;font-size:.88em;background:var(--line);padding:1px 6px;border-radius:4px}
+ul{padding-left:1.2rem;display:grid;gap:6px}
+.why{font-size:.93rem;color:var(--muted);margin-top:6px}
+.why b{color:var(--ink)}
+.tables{display:flex;gap:14px;flex-wrap:wrap}
+.tbl{flex:1 1 220px;border:2px solid var(--teal);border-radius:10px;background:var(--panel);overflow:hidden}
+.tbl header{background:var(--teal);color:#fff;font:500 .95rem "IBM Plex Mono",monospace;padding:8px 14px}
+.tbl div{padding:12px 14px;font-size:.93rem}
+.rel{font:500 .85rem "IBM Plex Mono",monospace;color:var(--teal-d);margin-top:4px}
+@media (prefers-color-scheme: dark){.rel{color:var(--kw)}}
+.bar{position:fixed;left:0;right:0;bottom:0;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:var(--panel);border-top:1px solid var(--line);z-index:5}
+.bar button{font:600 .95rem "IBM Plex Sans",sans-serif;border:1px solid var(--teal);background:transparent;color:var(--teal-d);padding:8px 18px;border-radius:8px;cursor:pointer}
+.bar button:hover{background:var(--teal);color:#fff}
+.bar button:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.bar button:disabled{opacity:.35;cursor:default;background:transparent;color:var(--teal-d)}
+@media (prefers-color-scheme: dark){.bar button{color:var(--kw);border-color:var(--kw)}}
+.dots{display:flex;gap:8px;align-items:center}
+.dots span{width:10px;height:10px;border-radius:50%;background:var(--line);cursor:pointer}
+.dots span.on{background:var(--teal);width:28px;border-radius:99px}
+.count{font:500 .9rem "IBM Plex Mono",monospace;color:var(--muted);min-width:60px;text-align:center}
+.cover{background:var(--ink);color:#EAF3F7}
+.cover .lead{color:#9FB6C2}
+.cover .stripe{width:96px;height:8px;background:var(--amber);border-radius:2px}
+.cover .meta{font:400 .9rem "IBM Plex Mono",monospace;color:#9FB6C2}
+@media (max-width:860px){
+  .slide{padding:28px 22px 88px;justify-content:flex-start}
+  .g2,.g3{grid-template-columns:1fr}
+  .dots{display:none}
+}
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- 1. PORTADA -->
+<section class="slide cover active">
+  <div class="stripe"></div>
+  <h1>TA-DIN: módulo de Recursos Humanos</h1>
+  <p class="lead">Control de asistencias con relojes biométricos: base de datos, vistas y funciones.</p>
+  <p class="meta">Bravo · Camino · Niello · Perri · Quintana</p>
+</section>
+
+<!-- 2. INTRODUCCIÓN -->
+<section class="slide">
+  <h2>Qué hace el sistema</h2>
+  <p class="lead">Centraliza las fichadas de entrada y salida de los relojes biométricos y las convierte en información lista para usar.</p>
+  <ul>
+    <li>Audita asistencias.</li>
+    <li>Calcula horas trabajadas, ausencias y llegadas tarde.</li>
+    <li>Alimenta los dashboards y los mapas de calor.</li>
+  </ul>
+  <h3 style="margin-top:6px">Base de datos relacional en MySQL</h3>
+  <div class="tables">
+    <div class="tbl"><header>empleados</header><div>Legajo, nombre, apellido y datos del personal.</div></div>
+    <div class="tbl"><header>registros_asistencia</header><div>Marcaciones reales: <code class="i">id_empleado</code>, <code class="i">fecha_hora</code>, <code class="i">tipo</code> (entrada/salida).</div></div>
+    <div class="tbl"><header>configuracion</header><div>Reglas de negocio: horarios, tolerancias y turnos.</div></div>
+  </div>
+  <p class="rel">empleados.id ──&lt; registros_asistencia.id_empleado</p>
+</section>
+
+<!-- 3. VISTAS 1 y 2 -->
+<section class="slide">
+  <h2>Vistas con JOIN</h2>
+  <p class="muted">Una vista es una tabla virtual creada con un SELECT: no guarda datos propios, simplifica consultas complejas, aporta seguridad y facilita la lectura.</p>
+  <div class="grid g2">
+    <div class="card accent">
+      <span class="tag">Vista 1</span>
+      <h3>v_presentismo_diario</h3>
+<pre><span class="k">CREATE VIEW</span> v_presentismo_diario <span class="k">AS</span>
+<span class="k">SELECT</span> e.id <span class="k">AS</span> empleado_id, e.legajo,
+  <span class="f">CONCAT</span>(e.nombre,<span class="s">' '</span>,e.apellido) <span class="k">AS</span> nombre_completo,
+  r.fecha_hora <span class="k">AS</span> hora_marcacion,
+  r.tipo <span class="k">AS</span> tipo_evento
+<span class="k">FROM</span> empleados e
+<span class="k">INNER JOIN</span> registros_asistencia r
+  <span class="k">ON</span> e.id = r.id_empleado
+<span class="k">WHERE</span> <span class="f">DATE</span>(r.fecha_hora) = <span class="f">CURDATE</span>();</pre>
+      <p class="why"><b>Para qué:</b> une cada empleado con sus fichadas de hoy. Alimenta las tarjetas Presentes/Ausentes del Dashboard sin escribir JOINs en PHP.</p>
+    </div>
+    <div class="card accent">
+      <span class="tag">Vista 2</span>
+      <h3>v_resumen_fichadas_completas</h3>
+<pre><span class="k">CREATE VIEW</span> v_resumen_fichadas_completas <span class="k">AS</span>
+<span class="k">SELECT</span> e.legajo,
+  <span class="f">CONCAT</span>(e.nombre,<span class="s">' '</span>,e.apellido) <span class="k">AS</span> empleado,
+  <span class="f">DATE</span>(r.fecha_hora) <span class="k">AS</span> fecha,
+  <span class="f">MIN</span>(<span class="k">CASE WHEN</span> r.tipo=<span class="s">'entrada'</span>
+    <span class="k">THEN</span> <span class="f">TIME</span>(r.fecha_hora) <span class="k">END</span>) <span class="k">AS</span> hora_entrada,
+  <span class="f">MAX</span>(<span class="k">CASE WHEN</span> r.tipo=<span class="s">'salida'</span>
+    <span class="k">THEN</span> <span class="f">TIME</span>(r.fecha_hora) <span class="k">END</span>) <span class="k">AS</span> hora_salida
+<span class="k">FROM</span> empleados e
+<span class="k">INNER JOIN</span> registros_asistencia r
+  <span class="k">ON</span> e.id = r.id_empleado
+<span class="k">GROUP BY</span> e.id, <span class="f">DATE</span>(r.fecha_hora);</pre>
+      <p class="why"><b>Para qué:</b> agrupa entrada y salida de cada jornada. Es la base del mapa de calor y de los reportes de liquidación.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4. VISTAS 3 y 4 -->
+<section class="slide">
+  <h2>Vista modificada y vista eliminada</h2>
+  <div class="grid g2">
+    <div class="card accent">
+      <span class="tag">Vista 3</span>
+      <h3>v_empleados_activos</h3>
+      <p class="muted">Creación inicial</p>
+<pre><span class="k">CREATE VIEW</span> v_empleados_activos <span class="k">AS</span>
+<span class="k">SELECT</span> id, legajo, nombre, apellido, area
+<span class="k">FROM</span> empleados;</pre>
+      <p class="muted">Modificación con <code class="i">CREATE OR REPLACE VIEW</code></p>
+<pre><span class="k">CREATE OR REPLACE VIEW</span> v_empleados_activos <span class="k">AS</span>
+<span class="k">SELECT</span> id, legajo, nombre, apellido,
+       area, fecha_ingreso
+<span class="k">FROM</span> empleados
+<span class="k">WHERE</span> estado = <span class="s">'ACTIVO'</span>;</pre>
+      <p class="why"><b>Para qué:</b> oculta información sensible y muestra solo al personal habilitado. Se actualizó para sumar la fecha de ingreso y filtrar por estado.</p>
+    </div>
+    <div class="card accent" style="border-left-color:var(--amber)">
+      <span class="tag amber">Vista 4</span>
+      <h3>v_registros_temp</h3>
+      <p class="muted">Creación</p>
+<pre><span class="k">CREATE VIEW</span> v_registros_temp <span class="k">AS</span>
+<span class="k">SELECT</span> * <span class="k">FROM</span> registros_asistencia
+<span class="k">WHERE</span> <span class="f">DATE</span>(fecha_hora) = <span class="s">'2026-01-01'</span>;</pre>
+      <p class="muted">Eliminación con <code class="i">DROP VIEW</code></p>
+<pre><span class="k">DROP VIEW</span> v_registros_temp;</pre>
+      <p class="why"><b>Por qué se eliminó:</b> era una vista de auditoría temporal para las pruebas de integración del reloj biométrico. Terminada la prueba, se quitó para mantener limpio el diccionario de datos.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5. FUNCIONES -->
+<section class="slide">
+  <h2>Tres funciones almacenadas</h2>
+  <p class="muted">Procesan datos en el servidor y devuelven un único valor. Los cálculos son iguales sin importar el cliente, mejoran el rendimiento y reducen el tráfico de red.</p>
+  <div class="grid g3">
+    <div class="card accent">
+      <span class="tag">Función 1</span>
+      <h3>fn_calcular_horas_trabajadas</h3>
+      <span class="tag grey">DETERMINISTIC · NO SQL</span>
+<pre><span class="k">CREATE FUNCTION</span> fn_calcular_horas_trabajadas(
+  p_entrada <span class="k">DATETIME</span>, p_salida <span class="k">DATETIME</span>)
+<span class="k">RETURNS DECIMAL</span>(5,2)
+<span class="k">DETERMINISTIC NO SQL</span>
+<span class="k">BEGIN</span>
+ <span class="k">DECLARE</span> v_minutos <span class="k">INT</span>;
+ <span class="k">IF</span> p_entrada <span class="k">IS NULL OR</span>
+    p_salida <span class="k">IS NULL THEN</span>
+   <span class="k">RETURN</span> 0.00;
+ <span class="k">END IF</span>;
+ <span class="k">SET</span> v_minutos = <span class="f">TIMESTAMPDIFF</span>(
+   <span class="k">MINUTE</span>, p_entrada, p_salida);
+ <span class="k">RETURN ROUND</span>(v_minutos/60.0, 2);
+<span class="k">END</span></pre>
+      <p class="why"><b>Para qué:</b> devuelve las horas decimales de la jornada a partir de entrada y salida.</p>
+    </div>
+    <div class="card accent">
+      <span class="tag">Función 2</span>
+      <h3>fn_determinar_llegada_tarde</h3>
+      <span class="tag grey">DETERMINISTIC · NO SQL</span>
+<pre><span class="k">CREATE FUNCTION</span> fn_determinar_llegada_tarde(
+  p_hora_marcacion <span class="k">TIME</span>,
+  p_hora_esperada <span class="k">TIME</span>)
+<span class="k">RETURNS VARCHAR</span>(20)
+<span class="k">DETERMINISTIC NO SQL</span>
+<span class="k">BEGIN</span>
+ <span class="k">IF</span> p_hora_marcacion <span class="k">IS NULL THEN</span>
+   <span class="k">RETURN</span> <span class="s">'AUSENTE'</span>;
+ <span class="k">ELSEIF</span> p_hora_marcacion &lt;=
+   <span class="f">ADDTIME</span>(p_hora_esperada,<span class="s">'00:15:00'</span>)
+   <span class="k">THEN RETURN</span> <span class="s">'A TIEMPO'</span>;
+ <span class="k">ELSE RETURN</span> <span class="s">'LLEGADA TARDE'</span>;
+ <span class="k">END IF</span>;
+<span class="k">END</span></pre>
+      <p class="why"><b>Para qué:</b> compara la marcación con la tolerancia (15 min) y clasifica el estado para las tarjetas del panel.</p>
+    </div>
+    <div class="card accent">
+      <span class="tag">Función 3</span>
+      <h3>fn_obtener_nombre_empleado</h3>
+      <span class="tag grey">READS SQL DATA · DETERMINISTIC</span>
+<pre><span class="k">CREATE FUNCTION</span> fn_obtener_nombre_empleado(
+  p_empleado_id <span class="k">INT</span>)
+<span class="k">RETURNS VARCHAR</span>(100)
+<span class="k">READS SQL DATA DETERMINISTIC</span>
+<span class="k">BEGIN</span>
+ <span class="k">DECLARE</span> v_nombre <span class="k">VARCHAR</span>(100);
+ <span class="k">SELECT</span> <span class="f">CONCAT</span>(nombre,<span class="s">' '</span>,apellido)
+   <span class="k">INTO</span> v_nombre
+ <span class="k">FROM</span> empleados
+ <span class="k">WHERE</span> id = p_empleado_id;
+ <span class="k">RETURN IFNULL</span>(v_nombre,
+   <span class="s">'Empleado no encontrado'</span>);
+<span class="k">END</span></pre>
+      <p class="why"><b>Para qué:</b> devuelve el nombre completo a partir del ID y evita repetir el CONCAT en PHP.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6. HOSTING -->
+<section class="slide">
+  <h2>Infraestructura y hosting</h2>
+  <div class="grid g2">
+    <div class="card"><h3>Hosting</h3><p>DonWeb</p></div>
+    <div class="card"><h3>Cliente de despliegue</h3><p>FileZilla (FTP)</p></div>
+  </div>
+  <h3>Por qué DonWeb</h3>
+  <div class="grid g2">
+    <div class="card accent"><h3>PHP 8 y MySQL nativo</h3><p class="muted">Ejecuta las consultas, las funciones y las vistas, y procesa la lógica de negocio en el servidor (SSR).</p></div>
+    <div class="card accent"><h3>Dominios propios</h3><p class="muted">Permite publicar el sitio en el dominio oficial de TA-DIN.</p></div>
+    <div class="card accent"><h3>Reportes por HTTP</h3><p class="muted">PHP inyecta cabeceras HTTP para generar y descargar reportes Excel (.xls) sin librerías externas pesadas.</p></div>
+    <div class="card accent"><h3>Costo/beneficio regional</h3><p class="muted">Alta disponibilidad para las consultas recurrentes de RRHH en producción.</p></div>
+  </div>
+</section>
+
+<!-- 1. PORTADA -->
+<section class="slide cover active">
+  <div class="stripe"></div>
+  <h1>TA-DIN: módulo de Recursos Humanos</h1>
+  <p class="lead">Control de asistencias con relojes biométricos: base de datos, vistas y funciones.</p>
+  <p class="meta">Bravo · Camino · Niello · Perri · Quintana</p>
+</section>
+
+</div>
+
+<nav class="bar" aria-label="Navegación de diapositivas">
+  <button id="prev">Anterior</button>
+  <div class="dots" id="dots"></div>
+  <span class="count" id="count"></span>
+  <button id="next">Siguiente</button>
+</nav>
+
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  var dots=document.getElementById('dots'), count=document.getElementById('count');
+  var prev=document.getElementById('prev'), next=document.getElementById('next');
+  var i=0;
+  slides.forEach(function(_,n){
+    var d=document.createElement('span');
+    d.title='Diapositiva '+(n+1);
+    d.onclick=function(){go(n)};
+    dots.appendChild(d);
+  });
+  function go(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach(function(s,k){s.classList.toggle('active',k===i)});
+    [].forEach.call(dots.children,function(d,k){d.classList.toggle('on',k===i)});
+    count.textContent=(i+1)+' / '+slides.length;
+    prev.disabled=i===0; next.disabled=i===slides.length-1;
+    slides[i].scrollTop=0;
+    try{history.replaceState(null,'','#'+(i+1))}catch(e){}
+  }
+  prev.onclick=function(){go(i-1)};
+  next.onclick=function(){go(i+1)};
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(i+1)}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1)}
+    else if(e.key==='Home'){go(0)}
+    else if(e.key==='End'){go(slides.length-1)}
+  });
+  var tx=null;
+  document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX},{passive:true});
+  document.addEventListener('touchend',function(e){
+    if(tx===null)return;
+    var dx=e.changedTouches[0].clientX-tx;
+    if(Math.abs(dx)>60)go(i+(dx<0?1:-1));
+    tx=null;
+  });
+  var h=parseInt(location.hash.slice(1),10);
+  go(isNaN(h)?0:h-1);
+
+  
+})();
+</script>
+</body>
+</html>
