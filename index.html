@@ -60,6 +60,17 @@ ul{padding-left:1.2rem;display:grid;gap:6px}
 .cover .lead{color:#9FB6C2}
 .cover .stripe{width:96px;height:8px;background:var(--amber);border-radius:2px}
 .cover .meta{font:400 .9rem "IBM Plex Mono",monospace;color:#9FB6C2}
+.stats{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.stat small{display:block;font:500 .75rem "IBM Plex Mono",monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.stat strong{display:block;font-size:1.25rem;font-weight:700;margin-top:2px}
+.stat.id{border-color:var(--teal);background:var(--teal);color:#fff}
+.stat.id small{color:#D6F0F2}
+.limits{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 8px}
+.limits span{font-size:.92rem;font-weight:600;padding:4px 12px;border-radius:99px;background:var(--line);color:var(--ink)}
+.limits b{color:var(--teal-d);font-family:"IBM Plex Mono",monospace;margin-right:4px}
+@media (prefers-color-scheme: dark){.limits b{color:var(--kw)}}
+.card p.sm{font-size:.93rem;max-width:none}
 @media (max-width:860px){
   .slide{padding:28px 22px 88px;justify-content:flex-start}
   .g2,.g3{grid-template-columns:1fr}
@@ -238,16 +249,42 @@ ul{padding-left:1.2rem;display:grid;gap:6px}
 <!-- 6. HOSTING -->
 <section class="slide">
   <h2>Infraestructura y hosting</h2>
-  <div class="grid g2">
-    <div class="card"><h3>Hosting</h3><p>DonWeb</p></div>
-    <div class="card"><h3>Cliente de despliegue</h3><p>FileZilla (FTP)</p></div>
+  <p class="muted">Proveedor: <b>DonWeb</b> · Despliegue con <b>FileZilla (FTP)</b></p>
+
+  <h3>Plan contratado</h3>
+  <div class="stats">
+    <div class="stat"><small>Sistema operativo</small><strong>Linux</strong></div>
+    <div class="stat"><small>Espacio en hosting</small><strong>30 GB</strong></div>
+    <div class="stat"><small>Espacio en correos</small><strong>30 GB</strong></div>
+    <div class="stat"><small>Transferencia</small><strong>Ilimitada</strong></div>
+    <div class="stat"><small>Cuentas de correo</small><strong>Ilimitadas</strong></div>
   </div>
+
+  <div class="grid g2">
+    <div class="card accent">
+      <h3>Capacidad y límites</h3>
+      <div class="limits">
+        <span><b>5</b>bases de datos</span>
+        <span><b>5</b>dominios</span>
+        <span><b>5</b>subdominios</span>
+        <span><b>5</b>cuentas FTP</span>
+      </div>
+      <p class="muted sm">Suficiente para alojar el sitio web de TA-DIN y el dominio oficial.</p>
+    </div>
+    <div class="card accent">
+      <h3>Datos de acceso (FTP y servidor)</h3>
+      <ul class="sm">
+        <li>Usuario, contraseña y puerto FTP.</li>
+        <li>Se cargan en FileZilla para conectar y subir los archivos de la web.</li>
+      </ul>
+      <p class="muted sm" style="margin-top:8px">Las credenciales se mantienen ocultas por seguridad.</p>
+    </div>
+  </div>
+
   <h3>Por qué DonWeb</h3>
   <div class="grid g2">
-    <div class="card accent"><h3>PHP 8 y MySQL nativo</h3><p class="muted">Ejecuta las consultas, las funciones y las vistas, y procesa la lógica de negocio en el servidor (SSR).</p></div>
-    <div class="card accent"><h3>Dominios propios</h3><p class="muted">Permite publicar el sitio en el dominio oficial de TA-DIN.</p></div>
-    <div class="card accent"><h3>Reportes por HTTP</h3><p class="muted">PHP inyecta cabeceras HTTP para generar y descargar reportes Excel (.xls) sin librerías externas pesadas.</p></div>
-    <div class="card accent"><h3>Costo/beneficio regional</h3><p class="muted">Alta disponibilidad para las consultas recurrentes de RRHH en producción.</p></div>
+    <div class="card accent"><h3>PHP 8 y MySQL nativo</h3><p class="muted sm">Ejecuta las consultas, las funciones y las vistas, y procesa la lógica de negocio en el servidor (SSR).</p></div>
+    <div class="card accent"><h3>Dominios propios</h3><p class="muted sm">Permite publicar el sitio en el dominio oficial de TA-DIN.</p></div>
   </div>
 </section>
 
